@@ -36,13 +36,23 @@ class MapillaryViewer extends Component {
     if (this.props.filter) {
       this.viewer.setFilter(this.props.filter);
     }
-    this.viewer.moveToKey(this.props.imageKey);
+    if (this.props.imageKey) {
+      this.viewer.moveToKey(this.props.imageKey);
+    }
+    if (this.props.coordinates) {
+      const [lon, lat] = this.props.coordinates;
+      this.viewer.moveCloseTo(lat, lon)
+    }
     this.viewer.on(Mapillary.Viewer.moveend, this.onMoveEnd);
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.imageKey !== prevProps.imageKey) {
       this.viewer.moveToKey(this.props.imageKey);
+    }
+    if (this.props.coordinates !== prevProps.coordinates) {
+      const [lon, lat] = this.props.coordinates;
+      this.viewer.moveCloseTo(lat, lon)
     }
   }
 
@@ -110,6 +120,7 @@ class MapillaryViewer extends Component {
 MapillaryViewer.propTypes = {
   clientId: PropTypes.string.isRequired,
   imageKey: PropTypes.string,
+  coordinates: PropTypes.array,
   onNodeChanged: PropTypes.func,
   onBearingChanged: PropTypes.func,
   onTiltChanged: PropTypes.func,
